@@ -1,24 +1,30 @@
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.io.InputStreamReader;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
-public class Ping {
+public class Ping2 {
+    public static void main(String[] args) {
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command("ping", "-c", "4", "ieseljust.com");
+        try {
+            Process p = pb.start();
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+            // Obtenim l'eixida del procés amb getInputStream,
+            // i la bolquem per pantalla, passant-la per un InputStreamReader
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
 
-        ArrayList<String> app=new ArrayList<String>();
+            BufferedWriter bw = new BufferedWriter(new FileWriter("archivo.txt"));
 
-        app.add("ping");
-        app.add("-c");
-        app.add("4");
-        app.add("ieseljust.com");
+            // Llegim línia a línia fins a null
+            while ((line = br.readLine()) != null) {
+                bw.write(line);
+            }
 
-        ProcessBuilder pb = new ProcessBuilder(app);
-        Process p = pb.start();
-
-        java.io.InputStream is = p.getInputStream();
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        String output = s.hasNext() ? s.next() : "";
-        System.out.println("Output:\n" + output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
